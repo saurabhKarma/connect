@@ -1,0 +1,97 @@
+name: connect
+description: "Vyapar Connect — shop broadcast app."
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # Firebase / push
+  firebase_core: ^4.12.1
+  firebase_messaging: ^16.0.4
+  flutter_local_notifications: ^18.0.1
+
+  # Fonts
+  google_fonts: ^6.2.1
+
+  # Icons (Phosphor)
+  phosphor_flutter: ^2.1.0
+
+  # Device contacts
+  flutter_contacts: ^1.1.9+2
+
+  # Biometric app lock (MFA)
+  local_auth: ^2.3.0
+
+  # State management
+  flutter_riverpod: ^3.0.3
+  riverpod: ^3.0.3
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.9.0
+
+  # Networking
+  dio: ^5.9.0
+
+  # Storage / device
+  flutter_secure_storage: ^9.2.4
+  sqflite: ^2.4.2
+  path_provider: ^2.1.4
+  device_info_plus: ^12.3.0
+
+  # UI / UX
+  flutter_screenutil: ^5.9.3
+  pinput: ^6.0.1
+  flutter_svg: ^2.2.3
+  cached_network_image: ^3.4.1
+  photo_view: ^0.15.0
+  shimmer: ^3.0.0
+  lottie: ^3.3.2
+  smooth_page_indicator: ^1.2.1
+  dropdown_button2: ^2.3.9
+  carousel_slider: ^5.1.1
+
+  # Media / files / sharing
+  image_picker: ^1.2.1
+  downloadsfolder: ^1.2.0
+  share_plus: ^12.0.1
+  url_launcher: ^6.3.2
+  permission_handler: ^12.0.1
+
+  # Payments
+  razorpay_flutter: ^1.4.0
+
+  # Location
+  geolocator: ^14.0.2
+  geocoding: ^4.0.0
+
+  # Utils
+  uuid: ^4.5.2
+  intl: ^0.20.2
+  logger: ^2.6.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+  # Code generation (run: dart run build_runner build --delete-conflicting-outputs)
+  build_runner: ^2.4.13
+  freezed: ^3.1.0
+  json_serializable: ^6.8.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/lottie/
+    - assets/images/

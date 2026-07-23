@@ -1,0 +1,88 @@
+{
+  "@@locale": "en",
+  "appName": "Mitra",
+  "tagline": "Stronger Together",
+
+  "enterNumberToLogin": "Enter number to login",
+  "login": "Login",
+  "invalidMobile": "Enter a valid 10-digit mobile number",
+
+  "verifyOtpTitle": "Verify OTP",
+  "otpSentTo": "We've sent an OTP on {phone}",
+  "@otpSentTo": {
+    "placeholders": {
+      "phone": { "type": "String" }
+    }
+  },
+  "edit": "Edit",
+  "enterOtp": "Enter the OTP",
+  "resendOtp": "Resend OTP",
+  "resendOtpIn": "Resend OTP in {seconds}",
+  "@resendOtpIn": {
+    "placeholders": {
+      "seconds": { "type": "String" }
+    }
+  },
+  "verify": "Verify",
+  "secureAndPrivate": "Secure & Private",
+  "otpConfidential": "Your OTP is confidential. Don't share it with anyone",
+
+  "secureCommunication": "Secure Communication",
+  "builtForBusiness": "Built For Business",
+  "yourDataProtected": "Your Data Is Protected",
+
+  "byContinuing": "By continuing, you agree to our",
+  "termsOfService": "Terms of service",
+  "and": "and",
+  "privacyPolicy": "Privacy Policy",
+
+  "settings": "Settings",
+  "language": "Language",
+  "english": "English",
+  "hindi": "हिंदी",
+
+  "home": "Home",
+  "broadcast": "Broadcast",
+  "selectContacts": "Select Contacts",
+  "searchByNameNumber": "Search by name & number",
+  "newContact": "New Contact",
+  "addNewContact": "Add New Contact",
+  "nameLabel": "Name",
+  "fullName": "Full Name",
+  "phoneNumberLabel": "Phone Number",
+  "phoneNumberHint": "Phone number",
+  "add": "Add",
+  "noBroadcastYet": "No Broadcast Started Yet",
+  "startBroadcast": "Start Broadcast",
+  "broadcastName": "Broadcast Name",
+
+  "details": "Details",
+  "contactPermission": "Contact Permission",
+  "contactPermissionDesc": "Contact permission to allow sharing the broadcast",
+  "notificationPermission": "Notification Permission",
+  "notificationPermissionDesc": "Allow notification for getting instant updates",
+  "appLock": "App Lock",
+  "appLockDesc": "Use MFA to secure your app access",
+  "appLockUnavailable": "No screen lock or biometrics set up on this device",
+  "permissionSettingsHint": "You can change this permission from the app settings.",
+  "openSettings": "Open Settings",
+  "cancel": "Cancel",
+  "darkTheme": "Dark Theme",
+  "helpFeedback": "Help & Feedback",
+  "shareInvite": "Share & Invite",
+  "changeLanguage": "Change Language",
+  "logout": "Logout",
+
+  "sendMessage": "Send Message",
+  "delete": "Delete",
+  "editName": "Edit Name",
+  "addMember": "Add Member",
+  "camera": "Camera",
+  "gallery": "Gallery",
+
+  "unlock": "Unlock",
+  "appLocked": "Mitra is locked",
+  "appLockedMessage": "Unlock with your fingerprint, face, or device passcode to continue.",
+
+  "somethingWentWrong": "Something went wrong. Please try again."
+}

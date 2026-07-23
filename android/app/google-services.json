@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "596206164812",
+    "project_id": "connect-8dc1f",
+    "storage_bucket": "connect-8dc1f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596206164812:android:1eec3bfb69f3093ffccde9",
+        "android_client_info": {
+          "package_name": "com.vyapar.connect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9XAkehgAncnWXuziMl3QQWjyzNLs67NI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
