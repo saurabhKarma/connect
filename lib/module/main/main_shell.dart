@@ -1,4 +1,5 @@
 import 'package:connect/module/broadcast/presentation/broadcast_screen.dart';
+import 'package:connect/module/chat/application/chat_providers.dart';
 import 'package:connect/module/contact/presentation/contacts_screen.dart';
 import 'package:connect/module/settings/presentation/profile_settings_screen.dart';
 import 'package:connect/services/notification_controller.dart';
@@ -30,22 +31,38 @@ class _MainShellState extends ConsumerState<MainShell> {
 
   void _onNavTap(int navIndex) {
     if (navIndex == 1) {
-      // Middle "Broadcast" action → start a new broadcast (Select Contacts).
+      // Middle "Broadcast" action → select contacts to broadcast to.
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const ContactsScreen(asFlow: true)),
+        MaterialPageRoute(builder: (_) => const ContactsScreen(asFlow: true, forBroadcast: true)),
       );
       return;
     }
     setState(() => _tab = navIndex == 2 ? 1 : 0);
   }
 
+  void _newChat() {
+    // Home FAB → pick a contact to start a 1:1 chat (or invite if not on Mitra).
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const ContactsScreen(asFlow: true)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    ref.watch(chatRealtimeProvider); // live-refresh chat list + badge on incoming push
+    final unread = ref.watch(unreadCountProvider).value ?? 0;
     return Scaffold(
       body: IndexedStack(index: _tab, children: _tabs),
+      floatingActionButton: _tab == 0
+          ? FloatingActionButton(
+              onPressed: _newChat,
+              child: const Icon(Icons.chat_bubble_outline),
+            )
+          : null,
       bottomNavigationBar: AppBottomNav(
         currentIndex: _tab == 0 ? 0 : 2,
         onTap: _onNavTap,
+        homeBadge: unread,
       ),
     );
   }

@@ -1,12 +1,17 @@
-import 'package:connect/module/broadcast/presentation/widgets/start_broadcast_sheet.dart';
+import 'package:connect/module/broadcast/data/broadcast_api_repository.dart';
+import 'package:connect/module/chat/application/chat_providers.dart';
+import 'package:connect/module/chat/presentation/chat_thread_screen.dart';
 import 'package:connect/module/contact/application/contacts_controller.dart';
+import 'package:connect/module/contact/data/contact_api_repository.dart';
 import 'package:connect/module/contact/data/contact_ui.dart';
 import 'package:connect/module/contact/data/device_contacts_repository.dart';
 import 'package:connect/module/contact/presentation/add_contact_screen.dart';
 import 'package:connect/module/contact/presentation/widgets/contact_tile.dart';
 import 'package:connect/res/app_colors.dart';
 import 'package:connect/res/text_style.dart';
+import 'package:connect/utility/app_toast.dart';
 import 'package:connect/utility/l10n_extension.dart';
+import 'package:connect/utility/phone_util.dart';
 import 'package:connect/widgets/app_bar.dart';
 import 'package:connect/widgets/app_button.dart';
 import 'package:connect/widgets/app_search_field.dart';
@@ -14,11 +19,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 
+/// Contacts picker. Two modes:
+///  - chat (default): tap a contact → open chat if they're on Mitra, else share an invite.
+///  - broadcast (forBroadcast): multi-select → compose a broadcast to the selected contacts.
 class ContactsScreen extends ConsumerStatefulWidget {
   final bool asFlow;
+  final bool forBroadcast;
 
-  const ContactsScreen({super.key, this.asFlow = false});
+  const ContactsScreen({super.key, this.asFlow = false, this.forBroadcast = false});
 
   @override
   ConsumerState<ContactsScreen> createState() => _ContactsScreenState();
@@ -26,7 +36,9 @@ class ContactsScreen extends ConsumerStatefulWidget {
 
 class _ContactsScreenState extends ConsumerState<ContactsScreen> {
   final Set<String> _selected = {};
+  final _contactApi = ContactApiRepository();
   String _query = '';
+  bool _busy = false;
 
   @override
   Widget build(BuildContext context) {
@@ -35,38 +47,49 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
 
     return Scaffold(
       appBar: CommonAppBar(title: l10n.selectContacts, showBack: widget.asFlow),
-      floatingActionButton: _selected.isEmpty
-          ? null
-          : FloatingActionButton(
+      floatingActionButton: (widget.forBroadcast && _selected.isNotEmpty)
+          ? FloatingActionButton(
               backgroundColor: AppColors.primary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-              onPressed: _startBroadcast,
-              child: const Icon(Icons.arrow_forward, color: AppColors.onPrimary),
-            ),
+              onPressed: _busy ? null : _composeBroadcast,
+              child: _busy
+                  ? const CircularProgressIndicator(color: AppColors.onPrimary, strokeWidth: 2)
+                  : const Icon(Icons.arrow_forward, color: AppColors.onPrimary),
+            )
+          : null,
       body: SafeArea(
         top: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 12.h),
-              child: AppSearchField(
-                hintText: l10n.searchByNameNumber,
-                onChanged: (v) => setState(() => _query = v),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 12.h),
+                  child: AppSearchField(
+                    hintText: l10n.searchByNameNumber,
+                    onChanged: (v) => setState(() => _query = v),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: _newContactButton(l10n),
+                ),
+                SizedBox(height: 8.h),
+                Expanded(
+                  child: contactsAsync.when(
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+                    error: (e, _) => _permissionState(l10n, e),
+                    data: (contacts) => _list(_filter(contacts)),
+                  ),
+                ),
+              ],
+            ),
+            if (_busy && !widget.forBroadcast)
+              const Positioned.fill(
+                child: ColoredBox(color: Colors.black26, child: Center(child: CircularProgressIndicator())),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: _newContactButton(l10n),
-            ),
-            SizedBox(height: 8.h),
-            Expanded(
-              child: contactsAsync.when(
-                loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
-                error: (e, _) => _permissionState(l10n, e),
-                data: (contacts) => _list(_filter(contacts)),
-              ),
-            ),
           ],
         ),
       ),
@@ -93,11 +116,98 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
         final c = contacts[i];
         return SelectableContactTile(
           contact: c,
-          selected: _selected.contains(c.id),
-          onTap: () => setState(
-              () => _selected.contains(c.id) ? _selected.remove(c.id) : _selected.add(c.id)),
+          selected: widget.forBroadcast && _selected.contains(c.id),
+          onTap: () {
+            if (widget.forBroadcast) {
+              setState(() => _selected.contains(c.id) ? _selected.remove(c.id) : _selected.add(c.id));
+            } else {
+              _openChat(c);
+            }
+          },
         );
       },
+    );
+  }
+
+  /// Chat mode: resolve whether the contact is on Mitra; open the thread or offer an invite.
+  Future<void> _openChat(ContactUi c) async {
+    final phone = PhoneUtil.toE164(c.phone);
+    setState(() => _busy = true);
+    try {
+      final results = await _contactApi.lookup([phone]);
+      final status = results.isNotEmpty ? results.first : null;
+      if (!mounted) return;
+      if (status != null && status.hasApp && status.userId != null) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => ChatThreadScreen(peerUserId: status.userId, peerName: c.name),
+        ));
+      } else {
+        await _invite();
+      }
+    } catch (_) {
+      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not check contact. Try again.');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _invite() async {
+    try {
+      await SharePlus.instance.share(
+        ShareParams(text: 'Chat with me on Mitra — install it here: https://mitra.app'),
+      );
+    } catch (_) {}
+  }
+
+  /// Broadcast mode: pick a message, then send to all selected contacts (registered ones receive it).
+  Future<void> _composeBroadcast() async {
+    final selectedContacts = _selectedContacts();
+    if (selectedContacts.isEmpty) return;
+    final message = await _messageDialog(selectedContacts.length);
+    if (message == null || message.isEmpty) return;
+
+    setState(() => _busy = true);
+    try {
+      final phones = selectedContacts.map((c) => PhoneUtil.toE164(c.phone)).toSet().toList();
+      await BroadcastApiRepository().compose(message: message, recipientPhones: phones);
+      ref.invalidate(chatListProvider);
+      if (!mounted) return;
+      ScaffoldToast.showSuccessBottom(context, 'Broadcast sent to ${phones.length} contacts');
+      Navigator.of(context).maybePop();
+    } catch (_) {
+      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not send broadcast.');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  List<ContactUi> _selectedContacts() {
+    final all = ref.read(contactsControllerProvider).value ?? const [];
+    return all.where((c) => _selected.contains(c.id)).toList();
+  }
+
+  Future<String?> _messageDialog(int count) {
+    final controller = TextEditingController();
+    return showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.card,
+        title: Text('Broadcast to $count', style: AppTextStyles.style16px.w700),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          maxLines: 4,
+          minLines: 1,
+          decoration: const InputDecoration(hintText: 'Type your message…'),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: Text('Send', style: AppTextStyles.style14px.w700.copyWith(color: AppColors.primary)),
+          ),
+        ],
+      ),
     );
   }
 
@@ -131,13 +241,6 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
         ),
       ),
     );
-  }
-
-  void _startBroadcast() async {
-    final name = await StartBroadcastSheet.show(context);
-    if (name == null || !mounted) return;
-    // TODO: create the broadcast: tag selected phone contacts to the shop
-    // (POST /shop/customers), then POST /broadcasts with the resulting members.
   }
 
   Widget _newContactButton(l10n) {

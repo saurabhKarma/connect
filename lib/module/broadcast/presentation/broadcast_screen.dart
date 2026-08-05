@@ -1,17 +1,16 @@
-import 'package:connect/module/broadcast/data/broadcast_summary.dart';
-import 'package:connect/module/broadcast/presentation/broadcast_detail_screen.dart';
-import 'package:connect/module/broadcast/presentation/widgets/broadcast_list_item.dart';
-import 'package:connect/module/contact/presentation/contacts_screen.dart';
+import 'package:connect/module/chat/application/chat_providers.dart';
+import 'package:connect/module/chat/presentation/chat_thread_screen.dart';
+import 'package:connect/module/chat/presentation/widgets/conversation_tile.dart';
 import 'package:connect/res/app_colors.dart';
 import 'package:connect/res/text_style.dart';
 import 'package:connect/utility/l10n_extension.dart';
 import 'package:connect/widgets/app_bar.dart';
-import 'package:connect/widgets/app_button.dart';
 import 'package:connect/widgets/app_search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// Home = the user's chat list (WhatsApp-style). Tapping a row opens the thread.
 class BroadcastScreen extends ConsumerStatefulWidget {
   const BroadcastScreen({super.key});
 
@@ -25,10 +24,7 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final all = ref.watch(broadcastListProvider);
-    final broadcasts = _query.isEmpty
-        ? all
-        : all.where((b) => b.name.toLowerCase().contains(_query.toLowerCase())).toList();
+    final chats = ref.watch(chatListProvider);
 
     return Scaffold(
       appBar: CommonAppBar(title: l10n.broadcast, showBack: false),
@@ -44,20 +40,38 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
               ),
             ),
             Expanded(
-              child: all.isEmpty
-                  ? _emptyState(l10n)
-                  : ListView.builder(
+              child: chats.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) => _errorState(e),
+                data: (all) {
+                  if (all.isEmpty) return _emptyState(l10n);
+                  final filtered = _query.isEmpty
+                      ? all
+                      : all.where((c) {
+                          final n = (c.peerName ?? c.peerPhone ?? '').toLowerCase();
+                          return n.contains(_query.toLowerCase());
+                        }).toList();
+                  return RefreshIndicator(
+                    onRefresh: () => ref.read(chatListProvider.notifier).reload(),
+                    child: ListView.builder(
                       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
-                      itemCount: broadcasts.length,
-                      itemBuilder: (_, i) => BroadcastListItem(
-                        broadcast: broadcasts[i],
+                      itemCount: filtered.length,
+                      itemBuilder: (_, i) => ConversationTile(
+                        conversation: filtered[i],
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => BroadcastDetailScreen(broadcast: broadcasts[i]),
+                            builder: (_) => ChatThreadScreen(
+                              conversationId: filtered[i].id,
+                              peerName: filtered[i].peerName ?? filtered[i].peerPhone ?? 'Chat',
+                              peerAvatarUrl: filtered[i].peerAvatarUrl,
+                            ),
                           ),
                         ),
                       ),
                     ),
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -70,23 +84,35 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.podcasts, size: 96.sp, color: AppColors.border),
+          Icon(Icons.chat_bubble_outline, size: 96.sp, color: AppColors.border),
           SizedBox(height: 16.h),
           Text(l10n.noBroadcastYet,
               style: AppTextStyles.style16px.w700.copyWith(color: AppColors.textSecondary)),
-          SizedBox(height: 16.h),
-          SizedBox(
-            width: 200.w,
-            child: AppButton(label: l10n.startBroadcast, onPressed: _startBroadcast),
-          ),
         ],
       ),
     );
   }
 
-  void _startBroadcast() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const ContactsScreen(asFlow: true)),
+  Widget _errorState(Object e) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(24.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.error_outline, size: 48.sp, color: AppColors.textSecondary),
+            SizedBox(height: 12.h),
+            Text('Could not load chats',
+                style: AppTextStyles.style14px.w600.copyWith(color: AppColors.textSecondary),
+                textAlign: TextAlign.center),
+            SizedBox(height: 12.h),
+            TextButton(
+              onPressed: () => ref.invalidate(chatListProvider),
+              child: Text('Retry', style: AppTextStyles.style14px.w700.copyWith(color: AppColors.primary)),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,16 +1,27 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:connect/module/chat/presentation/chat_thread_screen.dart';
+import 'package:connect/res/keys.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-/// Wraps FCM + local notifications: permission, token, and showing notifications
-/// while the app is in the foreground (FCM only auto-shows them in background).
+/// Wraps FCM + local notifications: permission, token, showing notifications while the app is
+/// foregrounded, and routing a tapped MESSAGE notification into the right chat thread.
 class PushService {
   final FirebaseMessaging _fm = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
 
+  /// Emits the data payload of foreground MESSAGE/BROADCAST pushes so the chat list and
+  /// the open thread can refresh live.
+  final StreamController<Map<String, dynamic>> _incoming = StreamController.broadcast();
+  Stream<Map<String, dynamic>> get onIncoming => _incoming.stream;
+
   static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
     'mitra_broadcasts',
-    'Broadcasts',
-    description: 'Broadcast messages from shops you follow',
+    'Messages',
+    description: 'Chat messages and broadcasts',
     importance: Importance.high,
   );
 
@@ -20,12 +31,22 @@ class PushService {
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
         iOS: DarwinInitializationSettings(),
       ),
+      onDidReceiveNotificationResponse: _onLocalTap,
     );
     await _local
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(_channel);
     await _fm.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
+
     FirebaseMessaging.onMessage.listen(_showForeground);
+    // App in background and the user taps the notification.
+    FirebaseMessaging.onMessageOpenedApp.listen((m) => _route(m.data, m.notification?.title));
+    // App was terminated and launched by tapping the notification.
+    final initial = await _fm.getInitialMessage();
+    if (initial != null) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _route(initial.data, initial.notification?.title));
+    }
   }
 
   /// Ask for notification permission. Returns true if granted/provisional.
@@ -40,6 +61,10 @@ class PushService {
   Stream<String> get onTokenRefresh => _fm.onTokenRefresh;
 
   void _showForeground(RemoteMessage message) {
+    final type = message.data['type'];
+    if (type == 'MESSAGE' || type == 'BROADCAST') {
+      _incoming.add(message.data);
+    }
     final n = message.notification;
     if (n == null) return;
     _local.show(
@@ -56,6 +81,29 @@ class PushService {
           icon: '@mipmap/ic_launcher',
         ),
         iOS: const DarwinNotificationDetails(),
+      ),
+      // carry the routing data + title so a tap can open the thread
+      payload: jsonEncode({...message.data, '_title': n.title ?? ''}),
+    );
+  }
+
+  void _onLocalTap(NotificationResponse response) {
+    final raw = response.payload;
+    if (raw == null || raw.isEmpty) return;
+    try {
+      final data = jsonDecode(raw) as Map<String, dynamic>;
+      _route(data, data['_title'] as String?);
+    } catch (_) {}
+  }
+
+  /// Open the conversation for a tapped MESSAGE notification.
+  void _route(Map<String, dynamic> data, String? title) {
+    if (data['type'] != 'MESSAGE') return;
+    final cid = data['conversationId'] as String?;
+    if (cid == null || cid.isEmpty) return;
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (_) => ChatThreadScreen(conversationId: cid, peerName: title ?? 'Chat'),
       ),
     );
   }

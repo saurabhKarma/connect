@@ -1,16 +1,23 @@
 import 'package:connect/app/locale_controller.dart';
 import 'package:connect/module/auth/application/session_controller.dart';
+import 'package:connect/module/auth/presentation/phone_screen.dart';
+import 'package:connect/module/broadcast/presentation/broadcast_history_screen.dart';
+import 'package:connect/module/profile/application/profile_providers.dart';
 import 'package:connect/module/settings/application/settings_controller.dart';
 import 'package:connect/res/app_colors.dart';
 import 'package:connect/res/text_style.dart';
 import 'package:connect/services/lock_service.dart';
+import 'package:connect/utility/app_toast.dart';
 import 'package:connect/utility/l10n_extension.dart';
+import 'package:connect/utility/secure_auth_storage_util.dart';
 import 'package:connect/widgets/app_bar.dart';
 import 'package:connect/widgets/section_title.dart';
 import 'package:connect/widgets/setting_tiles.dart';
+import 'package:connect/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -53,6 +60,8 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen>
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final user = ref.watch(sessionControllerProvider).value;
+    final profile = ref.watch(profileProvider).value;
+    final displayName = profile?.name ?? user?.name;
     final settings = ref.watch(settingsControllerProvider);
     final ctrl = ref.read(settingsControllerProvider.notifier);
     final isHindi = ref.watch(localeControllerProvider).languageCode == 'hi';
@@ -64,11 +73,14 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen>
         child: ListView(
           padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 24.h),
           children: [
-            Center(child: _avatar()),
+            Center(child: _avatar(profile?.avatarUrl, displayName)),
             SizedBox(height: 24.h),
             SectionTitle(l10n.details),
             SizedBox(height: 12.h),
-            InfoCard(label: l10n.nameLabel, value: user?.name ?? '—'),
+            GestureDetector(
+              onTap: () => _editName(displayName),
+              child: InfoCard(label: l10n.nameLabel, value: displayName ?? '—'),
+            ),
             SizedBox(height: 12.h),
             InfoCard(label: l10n.phoneNumberLabel, value: user?.phone ?? '—'),
             SizedBox(height: 24.h),
@@ -76,6 +88,13 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen>
             SizedBox(height: 12.h),
             _settingsCard(l10n, settings, ctrl),
             SizedBox(height: 16.h),
+            SettingLinkTile(
+              title: 'My Broadcasts',
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const BroadcastHistoryScreen()),
+              ),
+            ),
+            SizedBox(height: 12.h),
             SettingLinkTile(title: l10n.helpFeedback, onTap: _openFeedback),
             SizedBox(height: 12.h),
             SettingLinkTile(title: l10n.shareInvite, onTap: _shareInvite),
@@ -89,7 +108,11 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen>
             SizedBox(height: 24.h),
             Center(
               child: GestureDetector(
-                onTap: () => ref.read(sessionControllerProvider.notifier).logout(),
+                onTap: () async {
+                  // ref.read(sessionControllerProvider.notifier).logout();
+                  await SecureAuthStorageUtil.clearAuthData();
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> PhoneScreen()));
+                },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -112,30 +135,70 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen>
     );
   }
 
-  Widget _avatar() {
-    return Stack(
-      children: [
-        Container(
-          width: 92.w,
-          height: 92.w,
-          decoration: BoxDecoration(color: AppColors.surface, shape: BoxShape.circle),
-          child: Icon(Icons.person, size: 48.sp, color: AppColors.textHint),
-        ),
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: Container(
-            padding: EdgeInsets.all(6.w),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.15),
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.scaffold, width: 2),
+  Widget _avatar(String? avatarUrl, String? name) {
+    return GestureDetector(
+      onTap: _pickAvatar,
+      child: Stack(
+        children: [
+          UserAvatar(name: name ?? '?', imageUrl: avatarUrl, size: 92),
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Container(
+              padding: EdgeInsets.all(6.w),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.scaffold, width: 2),
+              ),
+              child: Icon(Icons.edit, size: 14.sp, color: AppColors.onPrimary),
             ),
-            child: Icon(Icons.edit, size: 14.sp, color: AppColors.primary),
           ),
-        ),
-      ],
+        ],
+      ),
     );
+  }
+
+  Future<void> _pickAvatar() async {
+    final picked = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+      maxWidth: 1080,
+    );
+    if (picked == null) return;
+    try {
+      await ref.read(profileRepositoryProvider).uploadAvatar(picked.path);
+      ref.invalidate(profileProvider);
+    } catch (_) {
+      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not update photo.');
+    }
+  }
+
+  Future<void> _editName(String? current) async {
+    final controller = TextEditingController(text: current ?? '');
+    final l10n = context.l10n;
+    final name = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.card,
+        title: Text(l10n.nameLabel, style: AppTextStyles.style16px.w700),
+        content: TextField(controller: controller, autofocus: true, maxLength: 120),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.cancel)),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: Text('Save', style: AppTextStyles.style14px.w700.copyWith(color: AppColors.primary)),
+          ),
+        ],
+      ),
+    );
+    if (name == null || name.isEmpty) return;
+    try {
+      await ref.read(profileRepositoryProvider).updateName(name);
+      ref.invalidate(profileProvider);
+    } catch (_) {
+      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not update name.');
+    }
   }
 
   Widget _settingsCard(l10n, SettingsState s, SettingsController ctrl) {

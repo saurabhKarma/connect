@@ -1,4 +1,3 @@
-import 'dart:convert' as ContentType;
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -209,7 +208,7 @@ class ApiController {
         queryParameters: queryParameters,
         options: Options(
           headers: headers,
-          contentType: ContentType.json.toString(),
+          contentType: Headers.jsonContentType,
           receiveTimeout: receiveTimeout ?? const Duration(seconds: 30),
           sendTimeout: sendTimeout ?? const Duration(seconds: 30),
         ),
@@ -240,7 +239,7 @@ class ApiController {
         queryParameters: queryParameters,
         options: Options(
           headers: headers,
-          contentType: ContentType.json.toString(),
+          contentType: Headers.jsonContentType,
           receiveTimeout: receiveTimeout ?? const Duration(seconds: 30),
           sendTimeout: sendTimeout ?? const Duration(seconds: 30),
         ),
