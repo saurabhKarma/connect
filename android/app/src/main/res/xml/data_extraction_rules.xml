@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+ backup/transfer rules. Exclude all app data from cloud backup and device
+     transfer: chat lives on the server (re-login via OTP), and auth tokens / secure storage
+     must never be backed up. This also prevents stale-key decrypt crashes after a restore. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="root" />
+    </device-transfer>
+</data-extraction-rules>

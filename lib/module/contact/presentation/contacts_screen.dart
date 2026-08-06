@@ -1,5 +1,3 @@
-import 'package:connect/module/broadcast/data/broadcast_api_repository.dart';
-import 'package:connect/module/chat/application/chat_providers.dart';
 import 'package:connect/module/chat/presentation/chat_thread_screen.dart';
 import 'package:connect/module/contact/application/contacts_controller.dart';
 import 'package:connect/module/contact/data/contact_api_repository.dart';
@@ -23,7 +21,8 @@ import 'package:share_plus/share_plus.dart';
 
 /// Contacts picker. Two modes:
 ///  - chat (default): tap a contact → open chat if they're on Mitra, else share an invite.
-///  - broadcast (forBroadcast): multi-select → compose a broadcast to the selected contacts.
+///  - broadcast (forBroadcast): multi-select → returns the chosen contacts to the caller (which
+///    then names + creates the broadcast list).
 class ContactsScreen extends ConsumerStatefulWidget {
   final bool asFlow;
   final bool forBroadcast;
@@ -51,10 +50,8 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
           ? FloatingActionButton(
               backgroundColor: AppColors.primary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-              onPressed: _busy ? null : _composeBroadcast,
-              child: _busy
-                  ? const CircularProgressIndicator(color: AppColors.onPrimary, strokeWidth: 2)
-                  : const Icon(Icons.arrow_forward, color: AppColors.onPrimary),
+              onPressed: () => Navigator.of(context).pop(_selectedContacts()),
+              child: const Icon(Icons.arrow_forward, color: AppColors.onPrimary),
             )
           : null,
       body: SafeArea(
@@ -159,56 +156,9 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
     } catch (_) {}
   }
 
-  /// Broadcast mode: pick a message, then send to all selected contacts (registered ones receive it).
-  Future<void> _composeBroadcast() async {
-    final selectedContacts = _selectedContacts();
-    if (selectedContacts.isEmpty) return;
-    final message = await _messageDialog(selectedContacts.length);
-    if (message == null || message.isEmpty) return;
-
-    setState(() => _busy = true);
-    try {
-      final phones = selectedContacts.map((c) => PhoneUtil.toE164(c.phone)).toSet().toList();
-      await BroadcastApiRepository().compose(message: message, recipientPhones: phones);
-      ref.invalidate(chatListProvider);
-      if (!mounted) return;
-      ScaffoldToast.showSuccessBottom(context, 'Broadcast sent to ${phones.length} contacts');
-      Navigator.of(context).maybePop();
-    } catch (_) {
-      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not send broadcast.');
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
   List<ContactUi> _selectedContacts() {
     final all = ref.read(contactsControllerProvider).value ?? const [];
     return all.where((c) => _selected.contains(c.id)).toList();
-  }
-
-  Future<String?> _messageDialog(int count) {
-    final controller = TextEditingController();
-    return showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.card,
-        title: Text('Broadcast to $count', style: AppTextStyles.style16px.w700),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          maxLines: 4,
-          minLines: 1,
-          decoration: const InputDecoration(hintText: 'Type your message…'),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-            child: Text('Send', style: AppTextStyles.style14px.w700.copyWith(color: AppColors.primary)),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _permissionState(l10n, Object error) {

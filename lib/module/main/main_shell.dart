@@ -1,4 +1,5 @@
 import 'package:connect/module/broadcast/presentation/broadcast_screen.dart';
+import 'package:connect/module/broadcastlist/presentation/broadcast_lists_screen.dart';
 import 'package:connect/module/chat/application/chat_providers.dart';
 import 'package:connect/module/contact/presentation/contacts_screen.dart';
 import 'package:connect/module/settings/presentation/profile_settings_screen.dart';
@@ -31,9 +32,9 @@ class _MainShellState extends ConsumerState<MainShell> {
 
   void _onNavTap(int navIndex) {
     if (navIndex == 1) {
-      // Middle "Broadcast" action → select contacts to broadcast to.
+      // Middle "Broadcast" action → the user's broadcast lists.
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const ContactsScreen(asFlow: true, forBroadcast: true)),
+        MaterialPageRoute(builder: (_) => const BroadcastListsScreen()),
       );
       return;
     }

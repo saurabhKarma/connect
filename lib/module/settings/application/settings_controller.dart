@@ -42,8 +42,12 @@ class SettingsPrefs {
   static const kDark = 'set_dark';
 
   static Future<bool> read(String key, bool def) async {
-    final v = await _storage.read(key: key);
-    return v == null ? def : v == 'true';
+    try {
+      final v = await _storage.read(key: key);
+      return v == null ? def : v == 'true';
+    } catch (_) {
+      return def; // corrupted secure store -> default setting
+    }
   }
 
   static Future<void> write(String key, bool value) => _storage.write(key: key, value: '$value');

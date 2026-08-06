@@ -16,11 +16,24 @@ class SecureAuthStorageUtil {
     }
   }
 
-  static Future<String?> getAccessToken() => _storage.read(key: _keyAccessToken);
+  static Future<String?> getAccessToken() => _read(_keyAccessToken);
 
-  static Future<String?> getRefreshToken() => _storage.read(key: _keyRefreshToken);
+  static Future<String?> getRefreshToken() => _read(_keyRefreshToken);
+
+  /// Reads a key; if the secure store can't be decrypted (e.g. reinstall / backup restore
+  /// leaves a stale key -> BadPaddingException), wipe it and start clean instead of crashing.
+  static Future<String?> _read(String key) async {
+    try {
+      return await _storage.read(key: key);
+    } catch (_) {
+      await clearAuthData();
+      return null;
+    }
+  }
 
   static Future<void> clearAuthData() async {
-    await _storage.deleteAll();
+    try {
+      await _storage.deleteAll();
+    } catch (_) {/* ignore */}
   }
 }

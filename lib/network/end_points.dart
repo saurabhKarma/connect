@@ -44,6 +44,11 @@ class EndPoints {
   static const String BROADCASTS = '$_api/broadcasts';
   static String broadcast(String id) => '$_api/broadcasts/$id';
 
+  // WhatsApp-style broadcast lists (named groups)
+  static const String BROADCAST_LISTS = '$_api/broadcast-lists';
+  static String broadcastList(String id) => '$_api/broadcast-lists/$id';
+  static String broadcastListMessages(String id) => '$_api/broadcast-lists/$id/messages';
+
   // 1:1 chat (WhatsApp-style)
   static const String CONVERSATIONS = '$_api/conversations';
   static const String CONVERSATIONS_UNREAD = '$_api/conversations/unread-count';
