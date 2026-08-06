@@ -6,6 +6,7 @@ import 'package:connect/module/broadcast/presentation/widgets/message_bubble.dar
 import 'package:connect/module/chat/application/chat_providers.dart';
 import 'package:connect/module/chat/data/chat_models.dart';
 import 'package:connect/module/media/media_repository.dart';
+import 'package:connect/services/active_chat.dart';
 import 'package:connect/res/app_colors.dart';
 import 'package:connect/res/text_style.dart';
 import 'package:connect/utility/app_toast.dart';
@@ -49,11 +50,13 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
   void initState() {
     super.initState();
     _cid = widget.conversationId;
+    if (_cid != null) ActiveChat.instance.enter(_cid!);
     _scroll.addListener(_onScroll);
   }
 
   @override
   void dispose() {
+    if (_cid != null) ActiveChat.instance.leave(_cid!);
     _scroll.dispose();
     _msgController.dispose();
     super.dispose();
@@ -92,6 +95,7 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
             .read(chatRepositoryProvider)
             .startChat(widget.peerUserId!, body: body, mediaUrl: mediaUrl, mediaType: mediaType);
         ref.invalidate(chatListProvider);
+        ActiveChat.instance.enter(msg.conversationId);
         if (mounted) setState(() => _cid = msg.conversationId);
       } else {
         await _controller!.send(body: body, mediaUrl: mediaUrl, mediaType: mediaType);

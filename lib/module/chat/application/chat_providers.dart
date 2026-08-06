@@ -70,6 +70,7 @@ class ThreadController extends ChangeNotifier {
   final String _cid;
   static const _uuid = Uuid();
   StreamSubscription<Map<String, dynamic>>? _pushSub;
+  Timer? _poll;
 
   AsyncValue<List<Message>> state = const AsyncValue.loading();
 
@@ -81,6 +82,9 @@ class ThreadController extends ChangeNotifier {
     _pushSub ??= _ref.read(pushServiceProvider).onIncoming.listen((data) {
       if (data['conversationId'] == _cid) _refreshSilently();
     });
+    // Poll while the thread is open, so it stays live even without push (or if notifications
+    // are denied / delayed). Cancelled on dispose when the thread closes.
+    _poll ??= Timer.periodic(const Duration(seconds: 5), (_) => _refreshSilently());
     state = const AsyncValue.loading();
     notifyListeners();
     state = await AsyncValue.guard(() async {
@@ -95,7 +99,9 @@ class ThreadController extends ChangeNotifier {
     try {
       final page = await _repo.messages(_cid, page: 0, size: 30);
       _markRead();
-      _set(page.content);
+      // Keep any in-flight optimistic messages (not yet acked by the server) on top.
+      final pending = _current.where((m) => m.id.startsWith('temp-')).toList();
+      _set([...pending, ...page.content]);
     } catch (_) {/* keep current */}
   }
 
@@ -110,6 +116,7 @@ class ThreadController extends ChangeNotifier {
   @override
   void dispose() {
     _pushSub?.cancel();
+    _poll?.cancel();
     super.dispose();
   }
 

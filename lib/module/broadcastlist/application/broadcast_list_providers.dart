@@ -14,3 +14,9 @@ final broadcastListMessagesProvider =
     FutureProvider.family<List<ListMessage>, String>((ref, listId) {
   return ref.read(broadcastListRepositoryProvider).messages(listId);
 });
+
+/// One list's members (for the Manage Recipients screen).
+final broadcastListDetailProvider =
+    FutureProvider.family<BroadcastListDetail, String>((ref, listId) {
+  return ref.read(broadcastListRepositoryProvider).detail(listId);
+});

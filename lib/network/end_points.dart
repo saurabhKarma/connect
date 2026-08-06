@@ -48,6 +48,7 @@ class EndPoints {
   static const String BROADCAST_LISTS = '$_api/broadcast-lists';
   static String broadcastList(String id) => '$_api/broadcast-lists/$id';
   static String broadcastListMessages(String id) => '$_api/broadcast-lists/$id/messages';
+  static String broadcastListMembers(String id) => '$_api/broadcast-lists/$id/members';
 
   // 1:1 chat (WhatsApp-style)
   static const String CONVERSATIONS = '$_api/conversations';

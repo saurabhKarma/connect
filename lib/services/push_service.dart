@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:connect/module/chat/presentation/chat_thread_screen.dart';
 import 'package:connect/res/keys.dart';
+import 'package:connect/services/active_chat.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -64,6 +65,11 @@ class PushService {
     final type = message.data['type'];
     if (type == 'MESSAGE' || type == 'BROADCAST') {
       _incoming.add(message.data);
+    }
+    // Suppress the notification for the conversation the user is currently viewing
+    // (the message shows up live in the thread instead).
+    if (type == 'MESSAGE' && ActiveChat.instance.isOpen(message.data['conversationId'] as String?)) {
+      return;
     }
     final n = message.notification;
     if (n == null) return;

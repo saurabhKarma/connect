@@ -5,6 +5,7 @@ import 'package:connect/module/broadcast/presentation/widgets/attach_sheet.dart'
 import 'package:connect/module/broadcast/presentation/widgets/message_bubble.dart';
 import 'package:connect/module/broadcastlist/application/broadcast_list_providers.dart';
 import 'package:connect/module/broadcastlist/data/broadcast_list_models.dart';
+import 'package:connect/module/broadcastlist/presentation/manage_recipients_screen.dart';
 import 'package:connect/module/media/media_repository.dart';
 import 'package:connect/res/app_colors.dart';
 import 'package:connect/res/text_style.dart';
@@ -33,6 +34,13 @@ class _BroadcastListThreadScreenState extends ConsumerState<BroadcastListThreadS
   final _media = MediaRepository();
   XFile? _pendingImage;
   bool _sending = false;
+  late String _title;
+
+  @override
+  void initState() {
+    super.initState();
+    _title = widget.name;
+  }
 
   @override
   void dispose() {
@@ -71,6 +79,76 @@ class _BroadcastListThreadScreenState extends ConsumerState<BroadcastListThreadS
     }
   }
 
+  void _onMenu(String value) {
+    switch (value) {
+      case 'manage':
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => ManageRecipientsScreen(listId: widget.listId, name: _title),
+        ));
+        break;
+      case 'rename':
+        _rename();
+        break;
+      case 'delete':
+        _delete();
+        break;
+    }
+  }
+
+  Future<void> _rename() async {
+    final controller = TextEditingController(text: _title);
+    final name = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.card,
+        title: Text('Rename list', style: AppTextStyles.style16px.w700),
+        content: TextField(controller: controller, autofocus: true, maxLength: 120),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: Text('Save', style: AppTextStyles.style14px.w700.copyWith(color: AppColors.primary)),
+          ),
+        ],
+      ),
+    );
+    if (name == null || name.isEmpty || name == _title || !mounted) return;
+    try {
+      await ref.read(broadcastListRepositoryProvider).rename(widget.listId, name);
+      ref.invalidate(broadcastListsProvider);
+      if (mounted) setState(() => _title = name);
+    } catch (_) {
+      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not rename list.');
+    }
+  }
+
+  Future<void> _delete() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.card,
+        title: Text('Delete list', style: AppTextStyles.style16px.w700),
+        content: Text('Delete "$_title"? This removes the list and its history. Recipients keep messages already sent.',
+            style: AppTextStyles.style14px.w500.copyWith(color: AppColors.textSecondary)),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text('Delete', style: AppTextStyles.style14px.w700.copyWith(color: AppColors.danger)),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    try {
+      await ref.read(broadcastListRepositoryProvider).delete(widget.listId);
+      ref.invalidate(broadcastListsProvider);
+      if (mounted) Navigator.of(context).pop();
+    } catch (_) {
+      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not delete list.');
+    }
+  }
+
   BroadcastMessage _toBubble(ListMessage m) {
     final time = DateFormat('h:mm a').format(m.createdAt.toLocal());
     final suffix = ' · ${m.recipientCount}';
@@ -93,14 +171,47 @@ class _BroadcastListThreadScreenState extends ConsumerState<BroadcastListThreadS
         surfaceTintColor: AppColors.scaffold,
         elevation: 0,
         titleSpacing: 0,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+        title: Row(
           children: [
-            Text(widget.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyles.style18px.w700),
-            Text('Broadcast list', style: AppTextStyles.style12px.w500.copyWith(color: AppColors.textSecondary)),
+            Container(
+              width: 36.w,
+              height: 36.w,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.campaign, color: AppColors.primary, size: 20.sp),
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(_title, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyles.style18px.w700),
+                  Text('Broadcast list',
+                      style: AppTextStyles.style12px.w500.copyWith(color: AppColors.textSecondary)),
+                ],
+              ),
+            ),
           ],
         ),
+        actions: [
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert, color: AppColors.textPrimary),
+            color: AppColors.card,
+            onSelected: _onMenu,
+            itemBuilder: (_) => [
+              PopupMenuItem(value: 'manage', child: Text('Manage recipients', style: AppTextStyles.style14px.w600)),
+              PopupMenuItem(value: 'rename', child: Text('Rename list', style: AppTextStyles.style14px.w600)),
+              PopupMenuItem(
+                value: 'delete',
+                child: Text('Delete list', style: AppTextStyles.style14px.w600.copyWith(color: AppColors.danger)),
+              ),
+            ],
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(
