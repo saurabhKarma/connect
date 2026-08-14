@@ -5,6 +5,7 @@ import 'package:connect/module/auth/presentation/auth_gate.dart';
 import 'package:connect/module/settings/application/settings_controller.dart';
 import 'package:connect/res/app_colors.dart';
 import 'package:connect/res/app_theme.dart';
+import 'package:connect/network/remote_config_service.dart';
 import 'package:connect/res/keys.dart';
 import 'package:connect/services/notification_controller.dart';
 import 'package:connect/services/push_service.dart';
@@ -22,6 +23,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  await RemoteConfigService.init();
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   final pushService = PushService();
@@ -61,7 +64,7 @@ class MyApp extends ConsumerWidget {
         return MaterialApp(
           key: ValueKey(dark),
           navigatorKey: navigatorKey,
-          title: 'Mitra',
+          title: 'Connect',
           debugShowCheckedModeBanner: false,
           theme: buildAppTheme(dark),
           locale: locale,

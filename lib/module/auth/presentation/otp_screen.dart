@@ -142,7 +142,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                   children: [
                     Opacity(
                       opacity: 0.05,
-                      child: Image.asset(AppImages.mitraLogo, height: 300.h),
+                      child: Image.asset(AppImages.appMark, height: 240.h),
                     ),
                     Column(
                       children: [

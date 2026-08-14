@@ -9,10 +9,22 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'Mitra';
+  String get appName => 'Connect';
 
   @override
-  String get tagline => 'Stronger Together';
+  String get tagline => 'Build Connection Using Connect';
+
+  @override
+  String get connections => 'Connections';
+
+  @override
+  String get noConnectionsYet => 'No connections yet';
+
+  @override
+  String get couldNotLoadChats => 'Could not load chats';
+
+  @override
+  String get retry => 'Retry';
 
   @override
   String get enterNumberToLogin => 'Enter number to login';
@@ -131,6 +143,101 @@ class AppLocalizationsEn extends AppLocalizations {
   String get broadcastName => 'Broadcast Name';
 
   @override
+  String get broadcastListsLoadError => 'Could not load broadcast lists';
+
+  @override
+  String get noBroadcastListsYet => 'No broadcast lists yet';
+
+  @override
+  String get tapPlusToCreate => 'Tap + to create one';
+
+  @override
+  String recipientsCount(int count) {
+    return '$count recipients';
+  }
+
+  @override
+  String get nameThisList => 'Name this list';
+
+  @override
+  String listNameHintExample(int count) {
+    return 'e.g. Regulars ($count contacts)';
+  }
+
+  @override
+  String get create => 'Create';
+
+  @override
+  String get couldNotCreateList => 'Could not create list.';
+
+  @override
+  String get broadcastListSubtitle => 'Broadcast list';
+
+  @override
+  String get manageRecipients => 'Manage recipients';
+
+  @override
+  String get renameList => 'Rename list';
+
+  @override
+  String get deleteList => 'Delete list';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get couldNotRenameList => 'Could not rename list.';
+
+  @override
+  String deleteListConfirm(String name) {
+    return 'Delete \"$name\"? This removes the list and its history. Recipients keep messages already sent.';
+  }
+
+  @override
+  String get couldNotDeleteList => 'Could not delete list.';
+
+  @override
+  String get couldNotLoadMessages => 'Could not load messages';
+
+  @override
+  String get sendFirstBroadcast => 'Send your first broadcast';
+
+  @override
+  String get couldNotSendBroadcast => 'Could not send broadcast.';
+
+  @override
+  String get recipients => 'Recipients';
+
+  @override
+  String get couldNotLoadRecipients => 'Could not load recipients';
+
+  @override
+  String get noRecipientsYet => 'No recipients yet';
+
+  @override
+  String get tapAddToInclude => 'Tap Add to include contacts';
+
+  @override
+  String get notOnApp => 'not on the app';
+
+  @override
+  String get removeRecipient => 'Remove recipient';
+
+  @override
+  String get remove => 'Remove';
+
+  @override
+  String removeRecipientConfirm(String name) {
+    return 'Remove $name from this list?';
+  }
+
+  @override
+  String get couldNotAddRecipients => 'Could not add recipients.';
+
+  @override
+  String get couldNotRemoveRecipient => 'Could not remove recipient.';
+
+  @override
   String get details => 'Details';
 
   @override
@@ -204,7 +311,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unlock => 'Unlock';
 
   @override
-  String get appLocked => 'Mitra is locked';
+  String get appLocked => 'Connect is locked';
 
   @override
   String get appLockedMessage =>

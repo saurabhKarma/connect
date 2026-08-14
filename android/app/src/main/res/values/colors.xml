@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand primary (Mitra/Connect green) used for the native launch window background -->
+    <color name="primary">#44B28D</color>
+	<color name="ic_launcher_background">#178373</color>
+</resources>

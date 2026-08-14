@@ -5,6 +5,7 @@ import 'package:connect/module/contact/presentation/contacts_screen.dart';
 import 'package:connect/res/app_colors.dart';
 import 'package:connect/res/text_style.dart';
 import 'package:connect/utility/app_toast.dart';
+import 'package:connect/utility/l10n_extension.dart';
 import 'package:connect/utility/phone_util.dart';
 import 'package:connect/widgets/app_bar.dart';
 import 'package:connect/widgets/user_avatar.dart';
@@ -28,21 +29,22 @@ class _ManageRecipientsScreenState extends ConsumerState<ManageRecipientsScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final async = ref.watch(broadcastListDetailProvider(widget.listId));
     return Scaffold(
-      appBar: CommonAppBar(title: 'Recipients', showBack: true),
+      appBar: CommonAppBar(title: l10n.recipients, showBack: true),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppColors.primary,
         onPressed: _busy ? null : _addMembers,
         icon: const Icon(Icons.person_add_alt_1, color: AppColors.onPrimary),
-        label: Text('Add', style: AppTextStyles.style14px.w700.copyWith(color: AppColors.onPrimary)),
+        label: Text(l10n.add, style: AppTextStyles.style14px.w700.copyWith(color: AppColors.onPrimary)),
       ),
       body: SafeArea(
         top: false,
         child: async.when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, _) => Center(
-            child: Text('Could not load recipients',
+            child: Text(l10n.couldNotLoadRecipients,
                 style: AppTextStyles.style14px.w600.copyWith(color: AppColors.textSecondary)),
           ),
           data: (detail) {
@@ -64,7 +66,7 @@ class _ManageRecipientsScreenState extends ConsumerState<ManageRecipientsScreen>
 
   Widget _header(int count) => Padding(
         padding: EdgeInsets.only(bottom: 8.h),
-        child: Text('$count ${count == 1 ? 'recipient' : 'recipients'}',
+        child: Text(context.l10n.recipientsCount(count),
             style: AppTextStyles.style13px.w600.copyWith(color: AppColors.textSecondary)),
       );
 
@@ -74,10 +76,10 @@ class _ManageRecipientsScreenState extends ConsumerState<ManageRecipientsScreen>
           children: [
             Icon(Icons.group_outlined, size: 84.sp, color: AppColors.border),
             SizedBox(height: 14.h),
-            Text('No recipients yet',
+            Text(context.l10n.noRecipientsYet,
                 style: AppTextStyles.style16px.w700.copyWith(color: AppColors.textSecondary)),
             SizedBox(height: 6.h),
-            Text('Tap Add to include contacts',
+            Text(context.l10n.tapAddToInclude,
                 style: AppTextStyles.style13px.w500.copyWith(color: AppColors.textSecondary)),
           ],
         ),
@@ -104,7 +106,7 @@ class _ManageRecipientsScreenState extends ConsumerState<ManageRecipientsScreen>
                         style: AppTextStyles.style12px.w500.copyWith(color: AppColors.textSecondary)),
                     if (!m.hasApp) ...[
                       SizedBox(width: 6.w),
-                      Text('· not on Mitra',
+                      Text('· ${context.l10n.notOnApp}',
                           style: AppTextStyles.style12px.w500.copyWith(color: AppColors.accent)),
                     ],
                   ],
@@ -133,26 +135,27 @@ class _ManageRecipientsScreenState extends ConsumerState<ManageRecipientsScreen>
       ref.invalidate(broadcastListDetailProvider(widget.listId));
       ref.invalidate(broadcastListsProvider);
     } catch (_) {
-      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not add recipients.');
+      if (mounted) ScaffoldToast.showErrorBottom(context, context.l10n.couldNotAddRecipients);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
   Future<void> _removeMember(BroadcastListMemberUi m) async {
+    final l10n = context.l10n;
     final title = (m.name != null && m.name!.isNotEmpty) ? m.name! : m.phone;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
-        title: Text('Remove recipient', style: AppTextStyles.style16px.w700),
-        content: Text('Remove $title from this list?',
+        title: Text(l10n.removeRecipient, style: AppTextStyles.style16px.w700),
+        content: Text(l10n.removeRecipientConfirm(title),
             style: AppTextStyles.style14px.w500.copyWith(color: AppColors.textSecondary)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Remove', style: AppTextStyles.style14px.w700.copyWith(color: AppColors.danger)),
+            child: Text(l10n.remove, style: AppTextStyles.style14px.w700.copyWith(color: AppColors.danger)),
           ),
         ],
       ),
@@ -164,7 +167,7 @@ class _ManageRecipientsScreenState extends ConsumerState<ManageRecipientsScreen>
       ref.invalidate(broadcastListDetailProvider(widget.listId));
       ref.invalidate(broadcastListsProvider);
     } catch (_) {
-      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not remove recipient.');
+      if (mounted) ScaffoldToast.showErrorBottom(context, l10n.couldNotRemoveRecipient);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

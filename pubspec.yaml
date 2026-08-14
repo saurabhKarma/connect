@@ -17,6 +17,7 @@ dependencies:
   # Firebase / push
   firebase_core: ^4.12.1
   firebase_messaging: ^16.0.4
+  firebase_remote_config: ^6.0.1
   flutter_local_notifications: ^18.0.1
 
   # Fonts
@@ -88,6 +89,18 @@ dev_dependencies:
   freezed: ^3.1.0
   json_serializable: ^6.8.0
 
+  # App launcher icon generation (run: dart run flutter_launcher_icons)
+  flutter_launcher_icons: ^0.14.4
+
+# Launcher icon config: white chat mark on the brand teal (adaptive on Android 8+).
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/images/icAppLogo.png"
+  adaptive_icon_background: "#178373"
+  adaptive_icon_foreground: "assets/icon/ic_foreground.png"
+
 flutter:
   uses-material-design: true
   generate: true
@@ -95,3 +108,4 @@ flutter:
   assets:
     - assets/lottie/
     - assets/images/
+    - assets/icon/

@@ -6,6 +6,7 @@ import 'package:connect/module/contact/presentation/contacts_screen.dart';
 import 'package:connect/res/app_colors.dart';
 import 'package:connect/res/text_style.dart';
 import 'package:connect/utility/app_toast.dart';
+import 'package:connect/utility/l10n_extension.dart';
 import 'package:connect/utility/phone_util.dart';
 import 'package:connect/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +25,10 @@ class BroadcastListsScreen extends ConsumerStatefulWidget {
 class _BroadcastListsScreenState extends ConsumerState<BroadcastListsScreen> {
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final async = ref.watch(broadcastListsProvider);
     return Scaffold(
-      appBar: const CommonAppBar(title: 'Broadcast', showBack: true),
+      appBar: CommonAppBar(title: l10n.broadcast, showBack: true),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
         onPressed: _newList,
@@ -37,7 +39,7 @@ class _BroadcastListsScreenState extends ConsumerState<BroadcastListsScreen> {
         child: async.when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, _) => Center(
-            child: Text('Could not load broadcast lists',
+            child: Text(l10n.broadcastListsLoadError,
                 style: AppTextStyles.style14px.w600.copyWith(color: AppColors.textSecondary)),
           ),
           data: (lists) {
@@ -64,10 +66,10 @@ class _BroadcastListsScreenState extends ConsumerState<BroadcastListsScreen> {
         children: [
           Icon(Icons.campaign_outlined, size: 96.sp, color: AppColors.border),
           SizedBox(height: 16.h),
-          Text('No broadcast lists yet',
+          Text(context.l10n.noBroadcastListsYet,
               style: AppTextStyles.style16px.w700.copyWith(color: AppColors.textSecondary)),
           SizedBox(height: 8.h),
-          Text('Tap + to create one',
+          Text(context.l10n.tapPlusToCreate,
               style: AppTextStyles.style13px.w500.copyWith(color: AppColors.textSecondary)),
         ],
       ),
@@ -103,7 +105,7 @@ class _BroadcastListsScreenState extends ConsumerState<BroadcastListsScreen> {
                   Text(l.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyles.style16px.w700),
                   SizedBox(height: 3.h),
                   Text(
-                    l.lastMessagePreview ?? '${l.memberCount} recipients',
+                    l.lastMessagePreview ?? context.l10n.recipientsCount(l.memberCount),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.style13px.w500.copyWith(color: AppColors.textSecondary),
@@ -137,28 +139,29 @@ class _BroadcastListsScreenState extends ConsumerState<BroadcastListsScreen> {
         builder: (_) => BroadcastListThreadScreen(listId: summary.id, name: summary.name),
       ));
     } catch (_) {
-      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not create list.');
+      if (mounted) ScaffoldToast.showErrorBottom(context, context.l10n.couldNotCreateList);
     }
   }
 
   Future<String?> _nameDialog(int count) {
+    final l10n = context.l10n;
     final controller = TextEditingController();
     return showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
-        title: Text('Name this list', style: AppTextStyles.style16px.w700),
+        title: Text(l10n.nameThisList, style: AppTextStyles.style16px.w700),
         content: TextField(
           controller: controller,
           autofocus: true,
           maxLength: 120,
-          decoration: InputDecoration(hintText: 'e.g. Regulars ($count contacts)'),
+          decoration: InputDecoration(hintText: l10n.listNameHintExample(count)),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-            child: Text('Create', style: AppTextStyles.style14px.w700.copyWith(color: AppColors.primary)),
+            child: Text(l10n.create, style: AppTextStyles.style14px.w700.copyWith(color: AppColors.primary)),
           ),
         ],
       ),

@@ -72,7 +72,7 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
                         SizedBox(height: 8.h),
                         const Align(alignment: Alignment.centerRight, child: LanguageToggle()),
                         SizedBox(height: 36.h),
-                        Image.asset(AppImages.mitraLogo, height: 300.h),
+                        Image.asset(AppImages.appMark, height: 200.h),
                         Text(l10n.tagline, style: AppTextStyles.style14px.w600.copyWith(color: AppColors.textSecondary)),
                         SizedBox(height: 48.h),
                         AppTextField(

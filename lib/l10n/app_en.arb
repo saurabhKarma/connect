@@ -1,7 +1,11 @@
 {
   "@@locale": "en",
-  "appName": "Mitra",
-  "tagline": "Stronger Together",
+  "appName": "Connect",
+  "tagline": "Build Connection Using Connect",
+  "connections": "Connections",
+  "noConnectionsYet": "No connections yet",
+  "couldNotLoadChats": "Could not load chats",
+  "retry": "Retry",
 
   "enterNumberToLogin": "Enter number to login",
   "login": "Login",
@@ -56,6 +60,48 @@
   "startBroadcast": "Start Broadcast",
   "broadcastName": "Broadcast Name",
 
+  "broadcastListsLoadError": "Could not load broadcast lists",
+  "noBroadcastListsYet": "No broadcast lists yet",
+  "tapPlusToCreate": "Tap + to create one",
+  "recipientsCount": "{count} recipients",
+  "@recipientsCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "nameThisList": "Name this list",
+  "listNameHintExample": "e.g. Regulars ({count} contacts)",
+  "@listNameHintExample": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "create": "Create",
+  "couldNotCreateList": "Could not create list.",
+  "broadcastListSubtitle": "Broadcast list",
+  "manageRecipients": "Manage recipients",
+  "renameList": "Rename list",
+  "deleteList": "Delete list",
+  "save": "Save",
+  "couldNotRenameList": "Could not rename list.",
+  "deleteListConfirm": "Delete \"{name}\"? This removes the list and its history. Recipients keep messages already sent.",
+  "@deleteListConfirm": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "couldNotDeleteList": "Could not delete list.",
+  "couldNotLoadMessages": "Could not load messages",
+  "sendFirstBroadcast": "Send your first broadcast",
+  "couldNotSendBroadcast": "Could not send broadcast.",
+  "recipients": "Recipients",
+  "couldNotLoadRecipients": "Could not load recipients",
+  "noRecipientsYet": "No recipients yet",
+  "tapAddToInclude": "Tap Add to include contacts",
+  "notOnApp": "not on the app",
+  "removeRecipient": "Remove recipient",
+  "remove": "Remove",
+  "removeRecipientConfirm": "Remove {name} from this list?",
+  "@removeRecipientConfirm": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "couldNotAddRecipients": "Could not add recipients.",
+  "couldNotRemoveRecipient": "Could not remove recipient.",
+
   "details": "Details",
   "contactPermission": "Contact Permission",
   "contactPermissionDesc": "Contact permission to allow sharing the broadcast",
@@ -81,7 +127,7 @@
   "gallery": "Gallery",
 
   "unlock": "Unlock",
-  "appLocked": "Mitra is locked",
+  "appLocked": "Connect is locked",
   "appLockedMessage": "Unlock with your fingerprint, face, or device passcode to continue.",
 
   "somethingWentWrong": "Something went wrong. Please try again."

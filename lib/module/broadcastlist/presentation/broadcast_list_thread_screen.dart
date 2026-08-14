@@ -70,7 +70,7 @@ class _BroadcastListThreadScreenState extends ConsumerState<BroadcastListThreadS
       if (mounted) setState(() => _pendingImage = null);
       ref.invalidate(broadcastListsProvider);
     } catch (_) {
-      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not send broadcast.');
+      if (mounted) ScaffoldToast.showErrorBottom(context, context.l10n.couldNotSendBroadcast);
     } finally {
       // Always reload the thread from the server (the broadcast may have been created even if the
       // response failed to parse), so the history stays correct.
@@ -96,18 +96,19 @@ class _BroadcastListThreadScreenState extends ConsumerState<BroadcastListThreadS
   }
 
   Future<void> _rename() async {
+    final l10n = context.l10n;
     final controller = TextEditingController(text: _title);
     final name = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
-        title: Text('Rename list', style: AppTextStyles.style16px.w700),
+        title: Text(l10n.renameList, style: AppTextStyles.style16px.w700),
         content: TextField(controller: controller, autofocus: true, maxLength: 120),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-            child: Text('Save', style: AppTextStyles.style14px.w700.copyWith(color: AppColors.primary)),
+            child: Text(l10n.save, style: AppTextStyles.style14px.w700.copyWith(color: AppColors.primary)),
           ),
         ],
       ),
@@ -118,23 +119,24 @@ class _BroadcastListThreadScreenState extends ConsumerState<BroadcastListThreadS
       ref.invalidate(broadcastListsProvider);
       if (mounted) setState(() => _title = name);
     } catch (_) {
-      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not rename list.');
+      if (mounted) ScaffoldToast.showErrorBottom(context, l10n.couldNotRenameList);
     }
   }
 
   Future<void> _delete() async {
+    final l10n = context.l10n;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
-        title: Text('Delete list', style: AppTextStyles.style16px.w700),
-        content: Text('Delete "$_title"? This removes the list and its history. Recipients keep messages already sent.',
+        title: Text(l10n.deleteList, style: AppTextStyles.style16px.w700),
+        content: Text(l10n.deleteListConfirm(_title),
             style: AppTextStyles.style14px.w500.copyWith(color: AppColors.textSecondary)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Delete', style: AppTextStyles.style14px.w700.copyWith(color: AppColors.danger)),
+            child: Text(l10n.delete, style: AppTextStyles.style14px.w700.copyWith(color: AppColors.danger)),
           ),
         ],
       ),
@@ -145,7 +147,7 @@ class _BroadcastListThreadScreenState extends ConsumerState<BroadcastListThreadS
       ref.invalidate(broadcastListsProvider);
       if (mounted) Navigator.of(context).pop();
     } catch (_) {
-      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not delete list.');
+      if (mounted) ScaffoldToast.showErrorBottom(context, l10n.couldNotDeleteList);
     }
   }
 
@@ -190,7 +192,7 @@ class _BroadcastListThreadScreenState extends ConsumerState<BroadcastListThreadS
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(_title, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyles.style18px.w700),
-                  Text('Broadcast list',
+                  Text(context.l10n.broadcastListSubtitle,
                       style: AppTextStyles.style12px.w500.copyWith(color: AppColors.textSecondary)),
                 ],
               ),
@@ -203,11 +205,11 @@ class _BroadcastListThreadScreenState extends ConsumerState<BroadcastListThreadS
             color: AppColors.card,
             onSelected: _onMenu,
             itemBuilder: (_) => [
-              PopupMenuItem(value: 'manage', child: Text('Manage recipients', style: AppTextStyles.style14px.w600)),
-              PopupMenuItem(value: 'rename', child: Text('Rename list', style: AppTextStyles.style14px.w600)),
+              PopupMenuItem(value: 'manage', child: Text(context.l10n.manageRecipients, style: AppTextStyles.style14px.w600)),
+              PopupMenuItem(value: 'rename', child: Text(context.l10n.renameList, style: AppTextStyles.style14px.w600)),
               PopupMenuItem(
                 value: 'delete',
-                child: Text('Delete list', style: AppTextStyles.style14px.w600.copyWith(color: AppColors.danger)),
+                child: Text(context.l10n.deleteList, style: AppTextStyles.style14px.w600.copyWith(color: AppColors.danger)),
               ),
             ],
           ),
@@ -220,13 +222,13 @@ class _BroadcastListThreadScreenState extends ConsumerState<BroadcastListThreadS
               child: async.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Center(
-                  child: Text('Could not load messages',
+                  child: Text(l10n.couldNotLoadMessages,
                       style: AppTextStyles.style14px.w600.copyWith(color: AppColors.textSecondary)),
                 ),
                 data: (messages) {
                   if (messages.isEmpty) {
                     return Center(
-                      child: Text('Send your first broadcast',
+                      child: Text(l10n.sendFirstBroadcast,
                           style: AppTextStyles.style14px.w500.copyWith(color: AppColors.textSecondary)),
                     );
                   }

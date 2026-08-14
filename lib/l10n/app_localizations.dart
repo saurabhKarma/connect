@@ -101,14 +101,38 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Mitra'**
+  /// **'Connect'**
   String get appName;
 
   /// No description provided for @tagline.
   ///
   /// In en, this message translates to:
-  /// **'Stronger Together'**
+  /// **'Build Connection Using Connect'**
   String get tagline;
+
+  /// No description provided for @connections.
+  ///
+  /// In en, this message translates to:
+  /// **'Connections'**
+  String get connections;
+
+  /// No description provided for @noConnectionsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No connections yet'**
+  String get noConnectionsYet;
+
+  /// No description provided for @couldNotLoadChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load chats'**
+  String get couldNotLoadChats;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
 
   /// No description provided for @enterNumberToLogin.
   ///
@@ -332,6 +356,180 @@ abstract class AppLocalizations {
   /// **'Broadcast Name'**
   String get broadcastName;
 
+  /// No description provided for @broadcastListsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load broadcast lists'**
+  String get broadcastListsLoadError;
+
+  /// No description provided for @noBroadcastListsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No broadcast lists yet'**
+  String get noBroadcastListsYet;
+
+  /// No description provided for @tapPlusToCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to create one'**
+  String get tapPlusToCreate;
+
+  /// No description provided for @recipientsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} recipients'**
+  String recipientsCount(int count);
+
+  /// No description provided for @nameThisList.
+  ///
+  /// In en, this message translates to:
+  /// **'Name this list'**
+  String get nameThisList;
+
+  /// No description provided for @listNameHintExample.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Regulars ({count} contacts)'**
+  String listNameHintExample(int count);
+
+  /// No description provided for @create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get create;
+
+  /// No description provided for @couldNotCreateList.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not create list.'**
+  String get couldNotCreateList;
+
+  /// No description provided for @broadcastListSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Broadcast list'**
+  String get broadcastListSubtitle;
+
+  /// No description provided for @manageRecipients.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage recipients'**
+  String get manageRecipients;
+
+  /// No description provided for @renameList.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename list'**
+  String get renameList;
+
+  /// No description provided for @deleteList.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete list'**
+  String get deleteList;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @couldNotRenameList.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not rename list.'**
+  String get couldNotRenameList;
+
+  /// No description provided for @deleteListConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"? This removes the list and its history. Recipients keep messages already sent.'**
+  String deleteListConfirm(String name);
+
+  /// No description provided for @couldNotDeleteList.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete list.'**
+  String get couldNotDeleteList;
+
+  /// No description provided for @couldNotLoadMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load messages'**
+  String get couldNotLoadMessages;
+
+  /// No description provided for @sendFirstBroadcast.
+  ///
+  /// In en, this message translates to:
+  /// **'Send your first broadcast'**
+  String get sendFirstBroadcast;
+
+  /// No description provided for @couldNotSendBroadcast.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not send broadcast.'**
+  String get couldNotSendBroadcast;
+
+  /// No description provided for @recipients.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipients'**
+  String get recipients;
+
+  /// No description provided for @couldNotLoadRecipients.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load recipients'**
+  String get couldNotLoadRecipients;
+
+  /// No description provided for @noRecipientsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No recipients yet'**
+  String get noRecipientsYet;
+
+  /// No description provided for @tapAddToInclude.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Add to include contacts'**
+  String get tapAddToInclude;
+
+  /// No description provided for @notOnApp.
+  ///
+  /// In en, this message translates to:
+  /// **'not on the app'**
+  String get notOnApp;
+
+  /// No description provided for @removeRecipient.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove recipient'**
+  String get removeRecipient;
+
+  /// No description provided for @remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove;
+
+  /// No description provided for @removeRecipientConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name} from this list?'**
+  String removeRecipientConfirm(String name);
+
+  /// No description provided for @couldNotAddRecipients.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not add recipients.'**
+  String get couldNotAddRecipients;
+
+  /// No description provided for @couldNotRemoveRecipient.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not remove recipient.'**
+  String get couldNotRemoveRecipient;
+
   /// No description provided for @details.
   ///
   /// In en, this message translates to:
@@ -473,7 +671,7 @@ abstract class AppLocalizations {
   /// No description provided for @appLocked.
   ///
   /// In en, this message translates to:
-  /// **'Mitra is locked'**
+  /// **'Connect is locked'**
   String get appLocked;
 
   /// No description provided for @appLockedMessage.

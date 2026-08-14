@@ -27,7 +27,7 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
     final chats = ref.watch(chatListProvider);
 
     return Scaffold(
-      appBar: CommonAppBar(title: l10n.broadcast, showBack: false),
+      appBar: CommonAppBar(title: l10n.connections, showBack: false),
       body: SafeArea(
         top: false,
         child: Column(
@@ -86,7 +86,7 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
         children: [
           Icon(Icons.chat_bubble_outline, size: 96.sp, color: AppColors.border),
           SizedBox(height: 16.h),
-          Text(l10n.noBroadcastYet,
+          Text(l10n.noConnectionsYet,
               style: AppTextStyles.style16px.w700.copyWith(color: AppColors.textSecondary)),
         ],
       ),
@@ -102,13 +102,13 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
           children: [
             Icon(Icons.error_outline, size: 48.sp, color: AppColors.textSecondary),
             SizedBox(height: 12.h),
-            Text('Could not load chats',
+            Text(context.l10n.couldNotLoadChats,
                 style: AppTextStyles.style14px.w600.copyWith(color: AppColors.textSecondary),
                 textAlign: TextAlign.center),
             SizedBox(height: 12.h),
             TextButton(
               onPressed: () => ref.invalidate(chatListProvider),
-              child: Text('Retry', style: AppTextStyles.style14px.w700.copyWith(color: AppColors.primary)),
+              child: Text(context.l10n.retry, style: AppTextStyles.style14px.w700.copyWith(color: AppColors.primary)),
             ),
           ],
         ),
