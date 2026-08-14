@@ -7,7 +7,7 @@ class EndPoints {
 
   static const String _prodBaseUrl = 'https://api.connect-messenger.com';
 
-  static String _baseUrl = !kReleaseMode ? _prodBaseUrl : _devBaseUrl;
+  static String _baseUrl = kReleaseMode ? _prodBaseUrl : _devBaseUrl;
 
   static String get BASE_URL => _baseUrl;
 

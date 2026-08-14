@@ -1,6 +1,5 @@
 import 'package:connect/app/locale_controller.dart';
 import 'package:connect/module/auth/application/session_controller.dart';
-import 'package:connect/module/auth/presentation/phone_screen.dart';
 import 'package:connect/module/broadcast/presentation/broadcast_history_screen.dart';
 import 'package:connect/module/profile/application/profile_providers.dart';
 import 'package:connect/module/settings/application/settings_controller.dart';
@@ -9,7 +8,6 @@ import 'package:connect/res/text_style.dart';
 import 'package:connect/services/lock_service.dart';
 import 'package:connect/utility/app_toast.dart';
 import 'package:connect/utility/l10n_extension.dart';
-import 'package:connect/utility/secure_auth_storage_util.dart';
 import 'package:connect/widgets/app_bar.dart';
 import 'package:connect/widgets/section_title.dart';
 import 'package:connect/widgets/setting_tiles.dart';
@@ -109,9 +107,12 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen>
             Center(
               child: GestureDetector(
                 onTap: () async {
-                  // ref.read(sessionControllerProvider.notifier).logout();
-                  await SecureAuthStorageUtil.clearAuthData();
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> PhoneScreen()));
+                  // Clear the session state (also clears tokens + tells the backend),
+                  // then pop back to the root so AuthGate rebuilds to the login screen.
+                  await ref.read(sessionControllerProvider.notifier).logout();
+                  if (context.mounted) {
+                    Navigator.of(context).popUntil((r) => r.isFirst);
+                  }
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
