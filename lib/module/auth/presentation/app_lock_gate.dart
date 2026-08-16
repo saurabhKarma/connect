@@ -9,8 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// Gates its [child] behind biometric/device auth when the App Lock setting is on.
-/// Authenticates on launch and re-locks when the app is backgrounded.
 class AppLockGate extends ConsumerStatefulWidget {
   final Widget child;
 
@@ -57,7 +55,7 @@ class _AppLockGateState extends ConsumerState<AppLockGate> with WidgetsBindingOb
     }
     if (_unlocked || _authInProgress) return;
     _authInProgress = true;
-    final ok = await ref.read(lockServiceProvider).authenticate('Unlock Mitra');
+    final ok = await ref.read(lockServiceProvider).authenticate('Unlock Connect');
     _authInProgress = false;
     if (mounted) setState(() => _unlocked = ok);
   }
@@ -85,7 +83,7 @@ class _LockScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(AppImages.mitraLogo, height: 120.h),
+              Image.asset(AppImages.appMark, height: 120.h),
               SizedBox(height: 32.h),
               Icon(Icons.lock_outline, size: 48.sp, color: AppColors.primary),
               SizedBox(height: 16.h),
