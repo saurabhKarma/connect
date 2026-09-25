@@ -238,6 +238,166 @@ class AppLocalizationsEn extends AppLocalizations {
   String get couldNotRemoveRecipient => 'Could not remove recipient.';
 
   @override
+  String get myStore => 'My Store';
+
+  @override
+  String get setUpYourStore => 'Set up your store';
+
+  @override
+  String get storeName => 'Store name';
+
+  @override
+  String get storeNameHint => 'e.g. Sharma Garments';
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get storeTagline => 'Tagline';
+
+  @override
+  String get taglineHint => 'One line about your store (optional)';
+
+  @override
+  String get storeLogo => 'Store logo';
+
+  @override
+  String get createStore => 'Create store';
+
+  @override
+  String get saveChanges => 'Save changes';
+
+  @override
+  String get editStore => 'Edit store';
+
+  @override
+  String get couldNotSaveStore => 'Could not save store. Try again.';
+
+  @override
+  String get couldNotLoadStore => 'Could not load store.';
+
+  @override
+  String get catFashion => 'Fashion';
+
+  @override
+  String get catGrocery => 'Grocery';
+
+  @override
+  String get catElectronics => 'Electronics';
+
+  @override
+  String get catFood => 'Food';
+
+  @override
+  String get catHome => 'Home';
+
+  @override
+  String get catBeauty => 'Beauty';
+
+  @override
+  String get catServices => 'Services';
+
+  @override
+  String get catOther => 'Other';
+
+  @override
+  String get addProduct => 'Add product';
+
+  @override
+  String get editProduct => 'Edit product';
+
+  @override
+  String get productName => 'Product name';
+
+  @override
+  String get productNameHint => 'e.g. Cotton Kurta';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get optional => 'Optional';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get descriptionHint => 'Details, sizes, colours… (optional)';
+
+  @override
+  String get photos => 'Photos';
+
+  @override
+  String get addPhoto => 'Add photo';
+
+  @override
+  String get inStock => 'In stock';
+
+  @override
+  String get outOfStock => 'Out of stock';
+
+  @override
+  String get available => 'Available';
+
+  @override
+  String get hide => 'Hide';
+
+  @override
+  String get unhide => 'Unhide';
+
+  @override
+  String deleteProductConfirm(String name) {
+    return 'Delete \"$name\"? This can\'t be undone.';
+  }
+
+  @override
+  String get productDeleted => 'Product deleted';
+
+  @override
+  String get couldNotSaveProduct => 'Could not save product. Try again.';
+
+  @override
+  String get couldNotDeleteProduct => 'Could not delete product.';
+
+  @override
+  String get noProductsYet => 'No products yet';
+
+  @override
+  String get addFirstProduct => 'Add your first product';
+
+  @override
+  String get couldNotLoadProducts => 'Could not load products.';
+
+  @override
+  String productsCount(int count) {
+    return '$count products';
+  }
+
+  @override
+  String get dmForPrice => 'Ask for price';
+
+  @override
+  String get enquire => 'Enquire';
+
+  @override
+  String get shareToChat => 'Share to chat';
+
+  @override
+  String get viewStore => 'View store';
+
+  @override
+  String get hiddenLabel => 'Hidden';
+
+  @override
+  String get couldNotLoadProduct => 'Could not load product.';
+
+  @override
+  String get storeHasNoProducts => 'This store has no products yet.';
+
+  @override
+  String get sharedAProduct => 'Shared a product';
+
+  @override
   String get details => 'Details';
 
   @override

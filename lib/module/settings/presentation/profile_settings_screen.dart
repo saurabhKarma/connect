@@ -1,6 +1,7 @@
 import 'package:connect/app/locale_controller.dart';
 import 'package:connect/module/auth/application/session_controller.dart';
 import 'package:connect/module/broadcast/presentation/broadcast_history_screen.dart';
+import 'package:connect/module/catalog/presentation/my_store_screen.dart';
 import 'package:connect/module/profile/application/profile_providers.dart';
 import 'package:connect/module/settings/application/settings_controller.dart';
 import 'package:connect/res/app_colors.dart';
@@ -86,6 +87,13 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen>
             SizedBox(height: 12.h),
             _settingsCard(l10n, settings, ctrl),
             SizedBox(height: 16.h),
+            SettingLinkTile(
+              title: l10n.myStore,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const MyStoreScreen()),
+              ),
+            ),
+            SizedBox(height: 12.h),
             SettingLinkTile(
               title: 'My Broadcasts',
               onTap: () => Navigator.of(context).push(
@@ -329,7 +337,7 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen>
     try {
       await SharePlus.instance.share(
         ShareParams(
-          text: 'I use Mitra to get instant updates from my shop. Join me: https://mitra.app',
+          text: 'I use Connect to get instant updates from my shop. Join me: https://connect-messenger.com',
         ),
       );
     } catch (_) {}

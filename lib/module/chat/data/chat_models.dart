@@ -15,6 +15,7 @@ abstract class Message with _$Message {
     String? mediaUrl,
     String? mediaType,
     String? broadcastId,
+    String? productId,
     required String status,
     @Default(false) bool deleted,
     @Default(false) bool edited,

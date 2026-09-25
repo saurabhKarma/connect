@@ -62,8 +62,10 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
                           MaterialPageRoute(
                             builder: (_) => ChatThreadScreen(
                               conversationId: filtered[i].id,
+                              peerUserId: filtered[i].peerUserId,
                               peerName: filtered[i].peerName ?? filtered[i].peerPhone ?? 'Chat',
                               peerAvatarUrl: filtered[i].peerAvatarUrl,
+                              peerPhone: filtered[i].peerPhone,
                             ),
                           ),
                         ),

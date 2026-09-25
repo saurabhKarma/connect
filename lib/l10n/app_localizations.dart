@@ -530,6 +530,318 @@ abstract class AppLocalizations {
   /// **'Could not remove recipient.'**
   String get couldNotRemoveRecipient;
 
+  /// No description provided for @myStore.
+  ///
+  /// In en, this message translates to:
+  /// **'My Store'**
+  String get myStore;
+
+  /// No description provided for @setUpYourStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your store'**
+  String get setUpYourStore;
+
+  /// No description provided for @storeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Store name'**
+  String get storeName;
+
+  /// No description provided for @storeNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Sharma Garments'**
+  String get storeNameHint;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @storeTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Tagline'**
+  String get storeTagline;
+
+  /// No description provided for @taglineHint.
+  ///
+  /// In en, this message translates to:
+  /// **'One line about your store (optional)'**
+  String get taglineHint;
+
+  /// No description provided for @storeLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Store logo'**
+  String get storeLogo;
+
+  /// No description provided for @createStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Create store'**
+  String get createStore;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get saveChanges;
+
+  /// No description provided for @editStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit store'**
+  String get editStore;
+
+  /// No description provided for @couldNotSaveStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save store. Try again.'**
+  String get couldNotSaveStore;
+
+  /// No description provided for @couldNotLoadStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load store.'**
+  String get couldNotLoadStore;
+
+  /// No description provided for @catFashion.
+  ///
+  /// In en, this message translates to:
+  /// **'Fashion'**
+  String get catFashion;
+
+  /// No description provided for @catGrocery.
+  ///
+  /// In en, this message translates to:
+  /// **'Grocery'**
+  String get catGrocery;
+
+  /// No description provided for @catElectronics.
+  ///
+  /// In en, this message translates to:
+  /// **'Electronics'**
+  String get catElectronics;
+
+  /// No description provided for @catFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get catFood;
+
+  /// No description provided for @catHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get catHome;
+
+  /// No description provided for @catBeauty.
+  ///
+  /// In en, this message translates to:
+  /// **'Beauty'**
+  String get catBeauty;
+
+  /// No description provided for @catServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get catServices;
+
+  /// No description provided for @catOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get catOther;
+
+  /// No description provided for @addProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Add product'**
+  String get addProduct;
+
+  /// No description provided for @editProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit product'**
+  String get editProduct;
+
+  /// No description provided for @productName.
+  ///
+  /// In en, this message translates to:
+  /// **'Product name'**
+  String get productName;
+
+  /// No description provided for @productNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Cotton Kurta'**
+  String get productNameHint;
+
+  /// No description provided for @price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get price;
+
+  /// No description provided for @optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get optional;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// No description provided for @descriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Details, sizes, colours… (optional)'**
+  String get descriptionHint;
+
+  /// No description provided for @photos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get photos;
+
+  /// No description provided for @addPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photo'**
+  String get addPhoto;
+
+  /// No description provided for @inStock.
+  ///
+  /// In en, this message translates to:
+  /// **'In stock'**
+  String get inStock;
+
+  /// No description provided for @outOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of stock'**
+  String get outOfStock;
+
+  /// No description provided for @available.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get available;
+
+  /// No description provided for @hide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get hide;
+
+  /// No description provided for @unhide.
+  ///
+  /// In en, this message translates to:
+  /// **'Unhide'**
+  String get unhide;
+
+  /// No description provided for @deleteProductConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"? This can\'t be undone.'**
+  String deleteProductConfirm(String name);
+
+  /// No description provided for @productDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Product deleted'**
+  String get productDeleted;
+
+  /// No description provided for @couldNotSaveProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save product. Try again.'**
+  String get couldNotSaveProduct;
+
+  /// No description provided for @couldNotDeleteProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete product.'**
+  String get couldNotDeleteProduct;
+
+  /// No description provided for @noProductsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No products yet'**
+  String get noProductsYet;
+
+  /// No description provided for @addFirstProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first product'**
+  String get addFirstProduct;
+
+  /// No description provided for @couldNotLoadProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load products.'**
+  String get couldNotLoadProducts;
+
+  /// No description provided for @productsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} products'**
+  String productsCount(int count);
+
+  /// No description provided for @dmForPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for price'**
+  String get dmForPrice;
+
+  /// No description provided for @enquire.
+  ///
+  /// In en, this message translates to:
+  /// **'Enquire'**
+  String get enquire;
+
+  /// No description provided for @shareToChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Share to chat'**
+  String get shareToChat;
+
+  /// No description provided for @viewStore.
+  ///
+  /// In en, this message translates to:
+  /// **'View store'**
+  String get viewStore;
+
+  /// No description provided for @hiddenLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden'**
+  String get hiddenLabel;
+
+  /// No description provided for @couldNotLoadProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load product.'**
+  String get couldNotLoadProduct;
+
+  /// No description provided for @storeHasNoProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'This store has no products yet.'**
+  String get storeHasNoProducts;
+
+  /// No description provided for @sharedAProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared a product'**
+  String get sharedAProduct;
+
   /// No description provided for @details.
   ///
   /// In en, this message translates to:

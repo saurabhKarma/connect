@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:connect/module/broadcast/data/broadcast_message.dart';
 import 'package:connect/module/broadcast/presentation/widgets/attach_sheet.dart';
 import 'package:connect/module/broadcast/presentation/widgets/message_bubble.dart';
+import 'package:connect/module/catalog/presentation/widgets/product_card.dart';
+import 'package:connect/module/chat/presentation/peer_profile_screen.dart';
 import 'package:connect/module/chat/application/chat_providers.dart';
 import 'package:connect/module/chat/data/chat_models.dart';
 import 'package:connect/module/media/media_repository.dart';
@@ -25,6 +27,8 @@ class ChatThreadScreen extends ConsumerStatefulWidget {
   final String? peerUserId; // required when starting a new chat
   final String peerName;
   final String? peerAvatarUrl;
+  final String? peerPhone;
+  final String? initialShareProductId; // auto-send this product as the opening message (Enquire)
 
   const ChatThreadScreen({
     super.key,
@@ -32,6 +36,8 @@ class ChatThreadScreen extends ConsumerStatefulWidget {
     this.peerUserId,
     required this.peerName,
     this.peerAvatarUrl,
+    this.peerPhone,
+    this.initialShareProductId,
   });
 
   @override
@@ -52,6 +58,25 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     _cid = widget.conversationId;
     if (_cid != null) ActiveChat.instance.enter(_cid!);
     _scroll.addListener(_onScroll);
+    if (widget.initialShareProductId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _shareInitialProduct());
+    }
+  }
+
+  Future<void> _shareInitialProduct() async {
+    final productId = widget.initialShareProductId!;
+    try {
+      if (_cid == null) {
+        final msg = await ref.read(chatRepositoryProvider).startChat(widget.peerUserId!, productId: productId);
+        ref.invalidate(chatListProvider);
+        ActiveChat.instance.enter(msg.conversationId);
+        if (mounted) setState(() => _cid = msg.conversationId);
+      } else {
+        await _controller!.send(productId: productId);
+      }
+    } catch (_) {
+      if (mounted) ScaffoldToast.showErrorBottom(context, 'Could not share. Try again.');
+    }
   }
 
   @override
@@ -201,15 +226,19 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
         surfaceTintColor: AppColors.scaffold,
         elevation: 0,
         titleSpacing: 0,
-        title: Row(
-          children: [
-            UserAvatar(name: widget.peerName, imageUrl: widget.peerAvatarUrl, size: 34),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: Text(widget.peerName,
-                  maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyles.style18px.w700),
-            ),
-          ],
+        title: GestureDetector(
+          onTap: widget.peerUserId == null ? null : _openPeerProfile,
+          behavior: HitTestBehavior.opaque,
+          child: Row(
+            children: [
+              UserAvatar(name: widget.peerName, imageUrl: widget.peerAvatarUrl, size: 34),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Text(widget.peerName,
+                    maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyles.style18px.w700),
+              ),
+            ],
+          ),
         ),
         actions: [
           if (_cid != null)
@@ -234,6 +263,17 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
         ),
       ),
     );
+  }
+
+  void _openPeerProfile() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => PeerProfileScreen(
+        userId: widget.peerUserId!,
+        name: widget.peerName,
+        avatarUrl: widget.peerAvatarUrl,
+        phone: widget.peerPhone,
+      ),
+    ));
   }
 
   Widget _newChatHint() {
@@ -269,6 +309,18 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
               itemCount: messages.length,
               itemBuilder: (_, i) {
                 final m = messages[i];
+                if (m.productId != null && !m.deleted) {
+                  return Align(
+                    alignment: m.mine ? Alignment.centerRight : Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 12.h),
+                      child: GestureDetector(
+                        onLongPress: () => _onLongPress(m),
+                        child: ProductChatCard(productId: m.productId!, mine: m.mine),
+                      ),
+                    ),
+                  );
+                }
                 return GestureDetector(
                   onLongPress: () => _onLongPress(m),
                   child: MessageBubble(message: _toBubble(m)),

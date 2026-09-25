@@ -238,6 +238,167 @@ class AppLocalizationsHi extends AppLocalizations {
   String get couldNotRemoveRecipient => 'प्राप्तकर्ता नहीं हटाया जा सका।';
 
   @override
+  String get myStore => 'मेरी दुकान';
+
+  @override
+  String get setUpYourStore => 'अपनी दुकान सेट करें';
+
+  @override
+  String get storeName => 'दुकान का नाम';
+
+  @override
+  String get storeNameHint => 'जैसे शर्मा गारमेंट्स';
+
+  @override
+  String get category => 'श्रेणी';
+
+  @override
+  String get storeTagline => 'टैगलाइन';
+
+  @override
+  String get taglineHint => 'अपनी दुकान के बारे में एक लाइन (वैकल्पिक)';
+
+  @override
+  String get storeLogo => 'दुकान का लोगो';
+
+  @override
+  String get createStore => 'दुकान बनाएँ';
+
+  @override
+  String get saveChanges => 'बदलाव सहेजें';
+
+  @override
+  String get editStore => 'दुकान संपादित करें';
+
+  @override
+  String get couldNotSaveStore => 'दुकान सहेजी नहीं जा सकी। पुनः प्रयास करें।';
+
+  @override
+  String get couldNotLoadStore => 'दुकान लोड नहीं हो सकी।';
+
+  @override
+  String get catFashion => 'फ़ैशन';
+
+  @override
+  String get catGrocery => 'किराना';
+
+  @override
+  String get catElectronics => 'इलेक्ट्रॉनिक्स';
+
+  @override
+  String get catFood => 'खाना';
+
+  @override
+  String get catHome => 'घर';
+
+  @override
+  String get catBeauty => 'ब्यूटी';
+
+  @override
+  String get catServices => 'सेवाएँ';
+
+  @override
+  String get catOther => 'अन्य';
+
+  @override
+  String get addProduct => 'उत्पाद जोड़ें';
+
+  @override
+  String get editProduct => 'उत्पाद संपादित करें';
+
+  @override
+  String get productName => 'उत्पाद का नाम';
+
+  @override
+  String get productNameHint => 'जैसे कॉटन कुर्ता';
+
+  @override
+  String get price => 'कीमत';
+
+  @override
+  String get optional => 'वैकल्पिक';
+
+  @override
+  String get description => 'विवरण';
+
+  @override
+  String get descriptionHint => 'विवरण, साइज़, रंग… (वैकल्पिक)';
+
+  @override
+  String get photos => 'तस्वीरें';
+
+  @override
+  String get addPhoto => 'तस्वीर जोड़ें';
+
+  @override
+  String get inStock => 'स्टॉक में';
+
+  @override
+  String get outOfStock => 'स्टॉक ख़त्म';
+
+  @override
+  String get available => 'उपलब्ध';
+
+  @override
+  String get hide => 'छिपाएँ';
+
+  @override
+  String get unhide => 'दिखाएँ';
+
+  @override
+  String deleteProductConfirm(String name) {
+    return '\"$name\" हटाएँ? यह वापस नहीं किया जा सकता।';
+  }
+
+  @override
+  String get productDeleted => 'उत्पाद हटाया गया';
+
+  @override
+  String get couldNotSaveProduct =>
+      'उत्पाद सहेजा नहीं जा सका। पुनः प्रयास करें।';
+
+  @override
+  String get couldNotDeleteProduct => 'उत्पाद नहीं हटाया जा सका।';
+
+  @override
+  String get noProductsYet => 'अभी तक कोई उत्पाद नहीं';
+
+  @override
+  String get addFirstProduct => 'अपना पहला उत्पाद जोड़ें';
+
+  @override
+  String get couldNotLoadProducts => 'उत्पाद लोड नहीं हो सके।';
+
+  @override
+  String productsCount(int count) {
+    return '$count उत्पाद';
+  }
+
+  @override
+  String get dmForPrice => 'कीमत पूछें';
+
+  @override
+  String get enquire => 'पूछताछ करें';
+
+  @override
+  String get shareToChat => 'चैट में साझा करें';
+
+  @override
+  String get viewStore => 'दुकान देखें';
+
+  @override
+  String get hiddenLabel => 'छिपा हुआ';
+
+  @override
+  String get couldNotLoadProduct => 'उत्पाद लोड नहीं हो सका।';
+
+  @override
+  String get storeHasNoProducts => 'इस दुकान में अभी कोई उत्पाद नहीं है।';
+
+  @override
+  String get sharedAProduct => 'एक उत्पाद साझा किया';
+
+  @override
   String get details => 'विवरण';
 
   @override

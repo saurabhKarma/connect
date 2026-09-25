@@ -3,11 +3,11 @@ import 'package:flutter/foundation.dart';
 class EndPoints {
   EndPoints._();
 
-  static const String _devBaseUrl = 'http://192.168.1.7:8080';
+  static const String _devBaseUrl = 'http://192.168.1.5:8080';
 
   static const String _prodBaseUrl = 'https://api.connect-messenger.com';
 
-  static String _baseUrl = kReleaseMode ? _prodBaseUrl : _devBaseUrl;
+  static String _baseUrl = !kReleaseMode ? _prodBaseUrl : _devBaseUrl;
 
   static String get BASE_URL => _baseUrl;
 
@@ -62,6 +62,16 @@ class EndPoints {
   static String broadcastList(String id) => '$_api/broadcast-lists/$id';
   static String broadcastListMessages(String id) => '$_api/broadcast-lists/$id/messages';
   static String broadcastListMembers(String id) => '$_api/broadcast-lists/$id/members';
+
+  // Catalog (store + products)
+  static String get CATALOG => '$_api/catalog';
+  static String get CATALOG_ME => '$_api/catalog/me';
+  static String get CATALOG_PRODUCTS => '$_api/catalog/me/products';
+  static String catalogProduct(String id) => '$_api/catalog/me/products/$id';
+  static String publicCatalog(String id) => '$_api/catalogs/$id';
+  static String publicCatalogProducts(String id) => '$_api/catalogs/$id/products';
+  static String publicProduct(String id) => '$_api/products/$id';
+  static String userCatalog(String userId) => '$_api/users/$userId/catalog';
 
   // 1:1 chat (WhatsApp-style)
   static String get CONVERSATIONS => '$_api/conversations';
